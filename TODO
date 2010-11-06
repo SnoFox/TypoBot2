@@ -1,0 +1,9 @@
+Spelling ignores
+|-URIs
+|-All caps?
+`-sed-style corrections
+ `-Maybe make it only correct the second half of the sed? :D
+General code cleanup/rewrite
+Make an array-like correction report
+|-Instead of "*fixed (pspell)", say "fiexd -> fixed"
+`-Optional, still provide old-style reports
