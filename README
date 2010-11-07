@@ -1,0 +1,17 @@
+## About TypoBot2 ##
+
+TypoBot2 is a spellchecker bot designed for use on IRC.
+It will scan messages from users who opt into the bot and notice them corrections to failures.
+TypoBot2 works by sending requests to Aspell through PHP's pspell functions.
+It also supports corrections via regex and plaintext string replacements.
+
+## Usage ##
+
+TypoBot2 is configured by the config/config.php file, and further configuration is offered in config/words.php
+Both "config files" are PHP source code which is simply included into the bot.
+--
+Usage on IRC:
+/msg <bot> spell -- Will turn on automatic spelling corrections
+/msg <bot> reload -- Will reload config/words.php for dynamic updating.
+In channel:
+!spell <string> -- Checks <string> for typos and messages the channel any corrections.
