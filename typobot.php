@@ -1,21 +1,20 @@
 <?PHP
 /* Includes */
 
-include 'functions.php';
+include 'includes/functions.php';
 
-include 'tb_config.php';
-include 'tb_data.php';
+include 'config/config.php';
+include 'config/words.php';
 
-/* Dirty, uncleaned code */
 
-$users = unserialize(file_get_contents('tb_db.dat'));
+$userData = unserialize( file_get_contents( 'data/tb_db.dat' ) );
 
-$pspell = pspell_new('en','','','',PSPELL_BAD_SPELLERS);
+$pspell = pspell_new( 'en', '' , '' , '' , PSPELL_BAD_SPELLERS );
 
-$socket = stream_socket_client('tcp://'.$config['server'].':'.$config['port'],$errno,$errstr,30);
+$socket = stream_socket_client( 'tcp://' . $config['server'] . ':' . $config['port'] , $errno , $errstr , 30 );
 
-if (!$socket) {
-    echo "$errstr ($errno)\n";
+if ( !$socket ) {
+    logit("$errstr ($errno)");
 } else {
     fwrite($socket,'USER '.$config['user'].' "1" "1" :'.$config['gecos']."\n");
     fwrite($socket,'NICK '.$config['nick']."\n");
