@@ -50,7 +50,7 @@ function coreKick( $nick, $ident, $host, $chan, $victim, $reason ) {
     global $userList;
     foreach( $userList[$chan] as $key => $user ) {
         if (strtolower($user) == strtolower($victim)) {
-            unset($userList[$chan]][$key]);
+            unset($userList[$chan][$key]);
             break;
         }
     } // foreach
