@@ -1,5 +1,6 @@
 <?php
 function checkSpelling( $nick, $target, $message ) {
+    global $exceptions;
 
     $breakChars = array(
         '/',
