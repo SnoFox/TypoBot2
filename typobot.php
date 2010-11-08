@@ -52,7 +52,8 @@ if ( !$socket ) {
                 $magic = explode(':', $rawParams, 2);
                 $params[] = $magic[1];
             }
-
+        }
+        
         unset( $ircData, $ircRawData ); // Shouldn't be using these anymore
 
         /* Done parsing the string into something more usable
