@@ -13,6 +13,7 @@ function debug( $msg ) {
 function ircWrite( $str ) {
     global $socket;
     fwrite( $socket, $str . "\n" );
+    debug( 'IRC:O: ' . $str );
     return;
 }
 

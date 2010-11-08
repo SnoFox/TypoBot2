@@ -65,6 +65,9 @@ if ( !$socket ) {
          *      $cmd = PING
          *      $params[0] = 03FE8J5
          */
+        debug('     $src = ' . $src);
+        debug('     $cmd = ' . $cmd);
+        debug('  $params = ' . implode(', ', $params));
 
         /* Now lets respond to the IRC event! */
 
