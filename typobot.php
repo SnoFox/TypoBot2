@@ -25,6 +25,7 @@ if ( !$socket ) {
     while ( !feof( $socket ) ) {
         $ircRawData = str_replace( array("\n","\r"), '', fgets($socket,512) );
         $ircData = explode(' ',$ircRawData);
+        debug( 'IRC:I: ' . implode(' ', $ircData) );
 
         /* Parse the IRC string
          * Put it into a nice format for the rest of the program to use
