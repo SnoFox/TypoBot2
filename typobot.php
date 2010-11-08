@@ -151,7 +151,7 @@ if ( !$socket ) {
                     $endOfNamesList[$channel] = FALSE;
                 }
 
-                $tmpUserList = explode(':',implode(' ',$tmp));
+                $tmpUserList = explode(':',implode(' ',$params);
                 $tmpUserList = explode(' ',trim($tmpUserList[2]));
 
                 foreach($tmpUserList as $num => $user) {
@@ -188,7 +188,7 @@ if ( !$socket ) {
                 coreKick( $nick, $ident, $address, $params[0], $params[1], $params[2] );
                 break;
             case 'privmsg':
-                corePrivmsg( $nick, $ident, $address, $params[0] );
+                corePrivmsg( $nick, $ident, $address, $params[0], $params[1] );
                 break;
             default:
                 break;
