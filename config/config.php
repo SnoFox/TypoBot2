@@ -7,8 +7,8 @@ $config = Array
     'port'      => '6667',
     'nick'      => 'Typo',
     'user'      => 'TypoBot',
-    'gecos'     => 'The Typo Bot.',
-    'channels'  => array ( '#clueirc', '#foxden', '#fun' ),
+    'gecos'     => 'The Typo Bot',
+    'channels'  => array ( '#foxden' ),
     'lang'      => 'en',
 );
 

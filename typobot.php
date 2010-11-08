@@ -77,9 +77,6 @@ if ( !$socket ) {
          *      $cmd = PING
          *      $params[0] = 03FE8J5
          */
-        debug('     $src = ' . $src);
-        debug('     $cmd = ' . $cmd);
-        debug('  $params = ' . implode(', ', $params));
 
         /* Now lets respond to the IRC event! */
 
@@ -113,7 +110,7 @@ if ( !$socket ) {
                     $isupport = array();
                 }
                 //:delta.cluenet.org 005 SnoFox CMDS=KNOCK,MAP,DCCALLOW,USERIP UHNAMES NAMESX SAFELIST HCN MAXCHANNELS=60 CHANLIMIT=#:60 MAXLIST=b:60,e:60,I:60 NICKLEN=30 CHANNELLEN=32 TOPICLEN=307 KICKLEN=307 AWAYLEN=307 :are supported by this server
-                $rplisupport = implode(' ',$tmp);
+                $rplisupport = implode(' ',$params);
                 $rplisupport = explode(':',$rplisupport);
                 $rplisupport = explode(' ',$rplisupport[1]);
                 foreach( $rplisupport as $feature ) {
@@ -131,9 +128,10 @@ if ( !$socket ) {
                 break;
             case '422':
                 // ERR_NOMOTD
-                break;
+//                break;
             case '376':
                 // RPL_ENDOFMOTD
+                coreConnected
                 break;
             case '353':
                 // RPL_NAMREPLY

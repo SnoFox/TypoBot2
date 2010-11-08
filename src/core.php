@@ -63,3 +63,9 @@ function corePrivmsg( $nick, $ident, $host, $chan, $msg ) {
     } */
     checkSpelling( $nick, $chan, $msg );
 }
+function coreConnected() {
+    global $config;
+    foreach( $config['channels'] as $channel ) {
+        ircWrite( 'JOIN ' . $channel );
+    }
+}
