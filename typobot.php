@@ -49,8 +49,9 @@ if ( !$socket ) {
             if( $param[0] != ':' ) {
                 $params[] = $param;
             } else {
-                $magic = explode(':', $rawParams, 2);
+                $magic = explode(':', implode(' ',$rawParams), 2);
                 $params[] = $magic[1];
+                break;
             }
         }
         
