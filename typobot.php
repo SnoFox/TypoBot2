@@ -151,7 +151,7 @@ if ( !$socket ) {
                     $endOfNamesList[$channel] = FALSE;
                 }
 
-                $tmpUserList = explode(':',implode(' ',$params);
+                $tmpUserList = explode(':',implode(' ',$params));
                 $tmpUserList = explode(' ',trim($tmpUserList[2]));
 
                 foreach($tmpUserList as $num => $user) {
