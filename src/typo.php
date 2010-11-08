@@ -89,9 +89,9 @@ function checkSpelling( $nick, $target, $message ) {
                 if (($evenifcorrect == 1) and (!$stuff)) { $stuff = 'Correct.'; }
                     if ($stuff) {
                         if ($privchan == 0) {
-                            fwrite($socket,'NOTICE '.$nick.' :'.$stuff."\n");
+                            ircWrite('NOTICE '.$nick.' :'.$stuff);
                         } else {
-                            fwrite($socket,'PRIVMSG '.$target.' :'.$nick.': '.$stuff."\n");
+                            ircWrite('PRIVMSG '.$target.' :'.$nick.': '.$stuff);
                         }
                     }
             }
@@ -105,19 +105,19 @@ fwrite($socket,'NOTICE '.$nick.' :Okay...'."\n");
         if (substr($message,0,5) == 'spell') {
             if ($users[strtolower($nick)]['spell'] == 1) {
                 $users[strtolower($nick)]['spell'] = 0;
-                fwrite($socket,'NOTICE '.$nick.' :Spelling corrections now off.'."\n");
+                ircWrite('NOTICE '.$nick.' :Spelling corrections now off.');
             } else {
                 $users[strtolower($nick)]['spell'] = 1;
-                fwrite($socket,'NOTICE '.$nick.' :Spelling corrections now on.'."\n");
+                ircWrite('NOTICE '.$nick.' :Spelling corrections now on.');
             }
-            file_put_contents('tb_db.dat',serialize($users));
+            file_put_contents('data/tb_db.dat',serialize($users));
         } elseif (substr($message,0,6) == 'public') {
             if ($users[strtolower($nick)]['public'] == 1) {
                 $users[strtolower($nick)]['public'] = 0;
-                fwrite($socket,'NOTICE '.$nick.' :Public spelling corrections now off.'."\n");
+                ircWrite('NOTICE '.$nick.' :Public spelling corrections now off.');
             } else {
                 $users[strtolower($nick)]['public'] = 1;
-                fwrite($socket,'NOTICE '.$nick.' :Public spelling corrections now on.'."\n");
+                ircWrite('NOTICE '.$nick.' :Public spelling corrections now on.');
             }
             file_put_contents('data/tb_db.dat',serialize($users));
         }
