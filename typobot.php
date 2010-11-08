@@ -35,14 +35,24 @@ if ( !$socket ) {
             // If the line starts with a colon, it has a source
             $src = substr( $ircData[0], 1 );
             $cmd = $ircData[1];
-            $params = array_slice( $ircData, 2 );
+            $rawParams = array_slice( $ircData, 2 );
         } else {
             // No source. Probably a PING...
             $src = NULL;
             $cmd = $ircData[0];
-            $params = array_slice( $ircData, 1 );
+            $rawParams = array_slice( $ircData, 1 );
         }
-        $params = explode( ':', implode( ' ', $params ) );
+        //        $params = explode( ':', implode( ' ', $params ), 2 );
+        //  Use below hack due to above hack getting blank params and extra spaces
+        $params = array();
+        foreach( $rawParams as $param ) {
+            if( $param[0] != ':' ) {
+                $params[] = $param;
+            } else {
+                $magic = explode(':', $rawParams, 2);
+                $params[] = $magic[1];
+            }
+
         unset( $ircData, $ircRawData ); // Shouldn't be using these anymore
 
         /* Done parsing the string into something more usable
