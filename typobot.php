@@ -131,7 +131,7 @@ if ( !$socket ) {
 //                break;
             case '376':
                 // RPL_ENDOFMOTD
-                coreConnected
+                coreConnected();
                 break;
             case '353':
                 // RPL_NAMREPLY
