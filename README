@@ -9,9 +9,16 @@ It also supports corrections via regex and plaintext string replacements.
 
 TypoBot2 is configured by the config/config.php file, and further configuration is offered in config/words.php
 Both "config files" are PHP source code which is simply included into the bot.
+Launch the bot by executing typobot.php any way you see fit.
 --
 Usage on IRC:
 /msg <bot> spell -- Will turn on automatic spelling corrections
 /msg <bot> reload -- Will reload config/words.php for dynamic updating.
 In channel:
 !spell <string> -- Checks <string> for typos and messages the channel any corrections.
+
+
+
+## Reasoning for this file ##
+Although the bot itself is simple, crippled, and unworking,
+this file is solely to prevent GitHub from whining about no README file. :)
