@@ -4,7 +4,6 @@
 include 'includes/functions.php';
 
 include 'config/config.php';
-include 'config/words.php';
 
 include 'src/core.php';
 include 'src/typo.php';

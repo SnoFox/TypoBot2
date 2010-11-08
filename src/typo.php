@@ -1,6 +1,6 @@
 <?php
 function checkSpelling( $nick, $target, $message ) {
-    global $exceptions;
+    include 'config/words.php';
 
     $breakChars = array(
         '/',
@@ -96,10 +96,13 @@ function checkSpelling( $nick, $target, $message ) {
                     }
             }
     } else {
-        if (substr($message,0,6) == 'reload') {
-            include 'config/words.php';
-            fwrite($socket,'NOTICE '.$nick.' :Okay...'."\n");
-        } elseif (substr($message,0,5) == 'spell') {
+/* // No longer required as of now
+if (substr($message,0,6) == 'reload') {
+include 'config/words.php';
+fwrite($socket,'NOTICE '.$nick.' :Okay...'."\n");
+} 
+ */
+        if (substr($message,0,5) == 'spell') {
             if ($users[strtolower($nick)]['spell'] == 1) {
                 $users[strtolower($nick)]['spell'] = 0;
                 fwrite($socket,'NOTICE '.$nick.' :Spelling corrections now off.'."\n");
