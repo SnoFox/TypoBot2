@@ -6,7 +6,7 @@
 function debug( $msg ) {
     $debug = 1;
     if( $debug == 1 )
-        print $msg . "\n";
+        print 'Debug: ' . $msg . "\n";
     return $debug;
 }
 

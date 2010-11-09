@@ -7,6 +7,7 @@ function coreJoin( $nick, $ident, $host, $chan ) {
     // Maintain userlist
     global $userList;
     $userList[ $channel ][] = $nick;
+    debug( '(JOIN) Userlist for ' . $chan . ': ' . implode( ', ', $userList[$chan] ) );
 }
 function corePart( $nick, $ident, $host, $chan, $reason ) {
     // Maintain userlist

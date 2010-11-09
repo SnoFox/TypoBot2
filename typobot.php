@@ -149,7 +149,7 @@ if ( !$socket ) {
                     unset($userList[$channel]);
                     $endOfNamesList[$channel] = FALSE;
                 }
-
+                debug( $channel . ' be getting some names! :D' );
                 $tmpUserList = explode(':',implode(' ',$params));
                 $tmpUserList = explode(' ',trim($tmpUserList[2]));
 
@@ -159,8 +159,10 @@ if ( !$socket ) {
 
                 foreach( $tmpUserList as $user ) {
                     $userList[$channel][] = $user;
+                    debug( 'Added ' . $user . ' to ' . $channel );
                 }
-
+                
+                debug( 'Userlist for ' . $channel . ': ' . implode( ', ', $userList[$channel] ) );
                 break;
             case '366':
                 if( !isset($endOfNamesList) ) {
