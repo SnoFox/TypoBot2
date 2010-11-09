@@ -23,7 +23,8 @@ if ( !$socket ) {
 
     while ( !feof( $socket ) ) {
         $ircRawData = str_replace( array("\n","\r"), '', fgets($socket,512) );
-        if( empty(trim($ircRawData)) ) {
+        $ircRawData = trim($ircRawData);
+        if( empty($ircRawData) ) {
             // Getting tired of Unreal's blank lines...
             continue;
         }
