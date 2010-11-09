@@ -12,9 +12,9 @@ function coreJoin( $nick, $ident, $host, $chan ) {
 function corePart( $nick, $ident, $host, $chan, $reason ) {
     // Maintain userlist
     global $userList;
-    foreach( $userList[$channel] as $key => $user ) {
+    foreach( $userList[$chan] as $key => $user ) {
         if (strtolower($user) == strtolower($nick)) {
-            unset($userList[$channel][$key]);
+            unset($userList[$chan][$key]);
             break;
         }
     } // foreach
@@ -23,10 +23,10 @@ function corePart( $nick, $ident, $host, $chan, $reason ) {
 function coreQuit( $nick, $ident, $host, $reason ) {
     // Maintain userlist
     global $userList;
-    foreach( $userList as $channel ) {
-        foreach( $userList[$channel] as $key => $user ) {
+    foreach( $userList as $chanKey => $channel ) {
+        foreach( $channel as $key => $user ) {
             if( strtolower($user) == strtolower($nick) ) {
-                unset($userList[$channel][$key]);
+                unset($userList[$chanKey][$key]);
                 break;
             } // if
         } // foreach user in channel
@@ -36,10 +36,10 @@ function coreQuit( $nick, $ident, $host, $reason ) {
 function coreNick( $nick, $ident, $host, $newNick ) {
     // Maintain userlist
     global $userList;
-    foreach( $userList as $channel ) {
-        foreach( $userList[$channel] as $key => $user ) {
+    foreach( $userList as $chanKey => $channel ) {
+        foreach( $channel as $key => $user ) {
             if( strtolower($user) == strtolower($nick) ) {
-                $userList[$channel][$key] = $newNick;
+                $userList[$chanKey][$key] = $newNick;
                 break;
             } // if
         } // Foreach user in channel

@@ -120,12 +120,14 @@ if ( !$socket ) {
                 foreach( $rplisupport as $feature ) {
                     $split = explode('=',$feature);
                     $isupport[ strtolower($split[0]) ] = $split[1];
+                    debug( 'RPL_ISUPPORT: Adding feature ' . $split[0] );
 
                     // maul PREFIX for the purpose of this bot
                     // XXX: this is a hack; clean this when I clean the code
                     if ( strtolower($split[0]) == 'prefix' ) {
                         $hack = explode(')',$isupport['prefix']);
                         $isupport['prefix'] = $hack[1];
+                        debug( 'RPL_ISUPPORT: Hacked prefixes to: ' . $hack[1]; );
                     }
                 }
 
