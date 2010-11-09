@@ -117,7 +117,7 @@ if ( !$socket ) {
                 $rplisupport = implode( ' ', array_slice($params, 1) );
                 $rplisupport = explode( ':', $rplisupport, -1 );
                 $rplisupport = implode( ':', $rplisupport );
-                $rplisupoprt = explode( ' ', $rplisupport );
+                $rplisupport = explode( ' ', $rplisupport );
 
                 foreach( $rplisupport as $feature ) {
                     $split = explode('=',$feature);
