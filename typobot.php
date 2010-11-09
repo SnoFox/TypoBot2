@@ -23,6 +23,10 @@ if ( !$socket ) {
 
     while ( !feof( $socket ) ) {
         $ircRawData = str_replace( array("\n","\r"), '', fgets($socket,512) );
+        if( empty(trim($ircRawData)) ) {
+            // Getting tired of Unreal's blank lines...
+            continue;
+        }
         $ircData = explode(' ',$ircRawData);
         debug( 'IRC:I: ' . implode(' ', $ircData) );
 
@@ -150,8 +154,7 @@ if ( !$socket ) {
                     $endOfNamesList[$channel] = FALSE;
                 }
                 debug( $channel . ' be getting some names! :D' );
-                $tmpUserList = explode(':',implode(' ',$params));
-                $tmpUserList = explode(' ',trim($tmpUserList[2]));
+                $tmpUserList = explode(' ',trim($params[3]));
 
                 foreach($tmpUserList as $num => $user) {
                     $tmpUserList[$num] = ltrim($user,$isupport['prefix']);
