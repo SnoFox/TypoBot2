@@ -127,7 +127,7 @@ if ( !$socket ) {
                     if ( strtolower($split[0]) == 'prefix' ) {
                         $hack = explode(')',$isupport['prefix']);
                         $isupport['prefix'] = $hack[1];
-                        debug( 'RPL_ISUPPORT: Hacked prefixes to: ' . $hack[1]; );
+                        debug( 'RPL_ISUPPORT: Hacked prefixes to: ' . $hack[1] );
                     }
                 }
 
