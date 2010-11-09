@@ -114,9 +114,8 @@ if ( !$socket ) {
                     $isupport = array();
                 }
                 //:delta.cluenet.org 005 SnoFox CMDS=KNOCK,MAP,DCCALLOW,USERIP UHNAMES NAMESX SAFELIST HCN MAXCHANNELS=60 CHANLIMIT=#:60 MAXLIST=b:60,e:60,I:60 NICKLEN=30 CHANNELLEN=32 TOPICLEN=307 KICKLEN=307 AWAYLEN=307 :are supported by this server
-                $rplisupport = explode( ' ', $rplisupport );
-                $rplisupport = implode( ' ', array_slice($rplisupport, 3) );
-                $rplisupport = explode( ':', $rplisupport,-1 );
+                $rplisupport = implode( ' ', array_slice($params, 1) );
+                $rplisupport = explode( ':', $rplisupport, -1 );
                 $rplisupport = implode( ':', $rplisupport );
                 $rplisupoprt = explode( ' ', $rplisupport );
 
