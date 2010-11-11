@@ -1,7 +1,10 @@
 <?php
-function checkSpelling( $nick, $target, $message ) {
-    include 'config/words.php';
+include 'config/words.php';
+$userData = unserialize( file_get_contents( 'data/tb_db.dat' ) );
+$pspell = pspell_new( $config['lang'], '', '', '', PSPELL_BAD_SPELLERS );
 
+function checkSpelling( $nick, $target, $message ) {
+    global $userList, $userData, $pspell, $ignores, $correctionsi, $corrections, $acorrections, $ecorrections, $exceptions, $spexceptions;
     $breakChars = array(
         '/',
         '\'',
@@ -18,10 +21,10 @@ function checkSpelling( $nick, $target, $message ) {
                 $good = 0;
             }
         }
-        if ($users[strtolower($nick)]['spell'] != 1) {
+        if ( !isset($userData[strtolower($nick)]['spell'] ) ) {
             $good = 0;
         }
-        if ($users[strtolower($nick)]['public'] == 1) {
+        if ( isset($userData[strtolower($nick)]['public'] ) ) {
             $privchan = 1;
         }
         if (strtolower(substr($message,0,7)) == '!spell ') { $message = substr($message,7); $privchan = 1; $good = 1; $evenifcorrect = 1; }
@@ -96,31 +99,28 @@ function checkSpelling( $nick, $target, $message ) {
                     }
             }
     } else {
-/* // No longer required as of now
-if (substr($message,0,6) == 'reload') {
-include 'config/words.php';
-fwrite($socket,'NOTICE '.$nick.' :Okay...'."\n");
-} 
- */
-        if (substr($message,0,5) == 'spell') {
-            if ($users[strtolower($nick)]['spell'] == 1) {
-                $users[strtolower($nick)]['spell'] = 0;
+        if (substr($message,0,6) == 'reload') {
+            include 'config/words.php';
+            ircWrite('NOTICE '.$nick.' :Okay...');
+            return;
+        } elseif (substr($message,0,5) == 'spell') {
+            if ( isset($userData[strtolower($nick)]['spell']) ) {
+                unset($userData[strtolower($nick)]['spell']);
                 ircWrite('NOTICE '.$nick.' :Spelling corrections now off.');
             } else {
-                $users[strtolower($nick)]['spell'] = 1;
+                $userData[strtolower($nick)]['spell'] = 1;
                 ircWrite('NOTICE '.$nick.' :Spelling corrections now on.');
             }
-            file_put_contents('data/tb_db.dat',serialize($users));
         } elseif (substr($message,0,6) == 'public') {
-            if ($users[strtolower($nick)]['public'] == 1) {
-                $users[strtolower($nick)]['public'] = 0;
+            if (isset($userData[strtolower($nick)]['public'])) {
+                unset($userData[strtolower($nick)]['public']);
                 ircWrite('NOTICE '.$nick.' :Public spelling corrections now off.');
             } else {
-                $users[strtolower($nick)]['public'] = 1;
+                $userData[strtolower($nick)]['public'] = 1;
                 ircWrite('NOTICE '.$nick.' :Public spelling corrections now on.');
             }
-            file_put_contents('data/tb_db.dat',serialize($users));
         }
+        file_put_contents('data/tb_db.dat',serialize($userData));
     }
 }
 ?>

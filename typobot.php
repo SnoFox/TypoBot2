@@ -9,9 +9,6 @@ include 'src/core.php';
 include 'src/typo.php';
 
 
-$userData = unserialize( file_get_contents( 'data/tb_db.dat' ) );
-
-$pspell = pspell_new( $config['lang'], '', '', '', PSPELL_BAD_SPELLERS );
 
 $socket = stream_socket_client( 'tcp://' . $config['server'] . ':' . $config['port'] , $errno , $errstr , 30 );
 
@@ -28,67 +25,31 @@ if ( !$socket ) {
             // Getting tired of Unreal's blank lines...
             continue;
         }
-        $ircData = explode(' ',$ircRawData);
-        debug( 'IRC:I: ' . implode(' ', $ircData) );
+        debug( 'IRC:I: ' . $ircRawData );
 
-        /* Parse the IRC string
-         * Put it into a nice format for the rest of the program to use
+        $data = ircSplit( $ircRawData );
+        unset( $ircRawData ); // We shouldn't be using this now.
+
+        /* Now we're using Cobi's kickass irc splitter, so we look like this:
+         * :SnoFox!~SnoFox@SnoFox.net KICK #clueirc MJ94 :Quit being a lamer!
+         * $data['type']        = relayed
+         * $data['rawpieces']   = array( 'SnoFox!~SnoFox@SnoFox.net', 'KICK', '#clueirc', 'MJ94', 'Quit being a lamer!' )
+         * $data['source']      = SnoFox!~SnoFox@SnoFox.net
+         * $data['command']     = KICK
+         * $data['target']      = #clueirc
+         * $data['pieces']      = array( 'MJ94', 'Quit being a lamer!' )
          */
 
-        if( $ircData[0][0] == ':' ) {
-            // If the line starts with a colon, it has a source
-            $src = substr( $ircData[0], 1 );
-            $cmd = $ircData[1];
-            $rawParams = array_slice( $ircData, 2 );
-        } else {
-            // No source. Probably a PING...
-            $src = NULL;
-            $cmd = $ircData[0];
-            $rawParams = array_slice( $ircData, 1 );
-        }
-        //        $params = explode( ':', implode( ' ', $params ), 2 );
-        //  Use below hack due to above hack getting blank params and extra spaces
-        $params = array();
-        foreach( $rawParams as $param ) {
-            if( $param[0] != ':' ) {
-                $params[] = $param;
-            } else {
-                $magic = explode(':', implode(' ',$rawParams), 2);
-                $params[] = $magic[1];
-                break;
-            }
-        }
-        
-        unset( $ircData, $ircRawData ); // Shouldn't be using these anymore
-
-        /* Done parsing the string into something more usable
-         * At this point, our setup is as follows:
-         *
-         * array $params    - all params to the command.
-         * string $src      - the source string
-         * string $cmd      - the command
-         *
-         * Examples:
-         * :SnoFox!~SnoFox@SnoFox.net KICK #clueirc MJ94 :Quit being a lamer.
-         *      $src = SnoFox!~SnoFox@SnoFox.net
-         *      $cmd = KICK
-         *      $params[0] = #clueirc
-         *      $params[1] = MJ94
-         *      $params[2] = Quit being a lamer.
-         *
-         * PING :03FE8J5
-         *      $src = NULL
-         *      $cmd = PING
-         *      $params[0] = 03FE8J5
-         */
 
         /* Now lets respond to the IRC event! */
-
-        if ( strtolower($cmd) == 'ping' ) {
-            ircWrite( 'PONG :' . $params[0] );
+        
+        if( $data['type'] == 'direct' ) { 
+            if ( $data['command'] == 'ping' ) {
+                ircWrite( 'PONG :' . $data['pieces'][0] );
+            }
         } else {
             /* Break down the source further */
-            $tmpSrc = explode( '!', $src);
+            $tmpSrc = explode( '!', $data['source'] );
             $nick = $tmpSrc[0];
             if( isset($tmpSrc[1]) ) {
                 $tmpSrc = explode( '@', $tmpSrc[1] );
@@ -106,31 +67,28 @@ if ( !$socket ) {
              * Note: $ident and $address will be NULL on server-source
              */
             
-            switch( strtolower($cmd) ) {
+            switch( $data['command'] ) {
             case '005':
                 // RPL_ISUPPORT
+                //:delta.cluenet.org 005 SnoFox CMDS=KNOCK,MAP,DCCALLOW,USERIP UHNAMES NAMESX SAFELIST HCN MAXCHANNELS=60 CHANLIMIT=#:60 MAXLIST=b:60,e:60,I:60 NICKLEN=30 CHANNELLEN=32 TOPICLEN=307 KICKLEN=307 AWAYLEN=307 :are supported by this server
 
                 if( !isset($isupport) ) {
                     $isupport = array();
+                    $prefixMauled = FALSE;
                 }
-                //:delta.cluenet.org 005 SnoFox CMDS=KNOCK,MAP,DCCALLOW,USERIP UHNAMES NAMESX SAFELIST HCN MAXCHANNELS=60 CHANLIMIT=#:60 MAXLIST=b:60,e:60,I:60 NICKLEN=30 CHANNELLEN=32 TOPICLEN=307 KICKLEN=307 AWAYLEN=307 :are supported by this server
-                $rplisupport = implode( ' ', array_slice($params, 1) );
-                $rplisupport = explode( ':', $rplisupport, -1 );
-                $rplisupport = implode( ':', $rplisupport );
-                $rplisupport = explode( ' ', $rplisupport );
-
-                foreach( $rplisupport as $feature ) {
-                    $split = explode('=',$feature);
-                    $isupport[ strtolower($split[0]) ] = $split[1];
-                    debug( 'RPL_ISUPPORT: Adding feature ' . $split[0] );
-
-                    // maul PREFIX for the purpose of this bot
-                    // XXX: this is a hack; clean this when I clean the code
-                    if ( strtolower($split[0]) == 'prefix' ) {
-                        $hack = explode(')',$isupport['prefix']);
-                        $isupport['prefix'] = $hack[1];
-                        debug( 'RPL_ISUPPORT: Hacked prefixes to: ' . $hack[1] );
-                    }
+                $tmpSupport = $data['pieces'];
+                // Rid us of "are supported by this server" >.<
+                array_pop($tmpSupport);
+                $newSupport = array();
+                foreach( $tmpSupport as $key => $feature ) {
+                    $split = explode( '=', $feature, 2 );
+                    $newSupport[strtolower($split[0])] = isset($split[1]) ? $split[1] : NULL;
+                }
+                $isupport = array_merge($isupport,$newSupport);
+                if( isset($isupport['prefix']) && $prefixMauled == FALSE ) {
+                    $prefixMauled = TRUE;
+                    $isupport['prefix'] = explode(')',$isupport['prefix'],2);
+                    $isupport['prefix'] = $isupport['prefix'][1];
                 }
 
                 break;
@@ -146,20 +104,15 @@ if ( !$socket ) {
                 // :delta.cluenet.org 353 SnoFox = #clueirc :Daisy BarryCarlyon hawken MindstormsKid Typo res inntranet thatguy nanobot Ashfire908 Damian pickle sort_-R artemis2 tonyb Hamlin ixfrit Crazytales Rich FastLizard4|zZzZ pop sonicbot-dev dbristow komik TDJACR neoark notdan clueless SnoFox Filefragg Supermeman nickzxcv osxdude danther LuminolBlue [FF]FoxBot MJ94 Somebody sommopfle AmazingCarter Lil`C joannac Suspect[L] Gerdesas jdstroy davenull Sthebig Hellow 
                 // :delta.cluenet.org 353 SnoFox = #clueirc :Dan fahadsadah niekie theron Nick hrmlgon2 Cobi &Rembrandt &Bash &AccountBot &PHP Katelin QuoteBot &DaVinci CobiBot Crispy nathan Cat lietk12 Deepy TwitterBot Dvyjones tuntis InvisiblePinkUnicorn mirash chaos95 jercos PieSpy 
                 // :delta.cluenet.org 366 SnoFox #clueirc :End of /NAMES list.
-                $channel = $params[2];
+                $channel = $data['pieces'][1];
 
-                if( !isset( $endOfNamesList[$channel] ) ) {
-                    // New channel? :D
+                if( !isset( $endOfNamesList[$channel] ) || $endOfNamesList[$channel] ) {
+                    // New names list; del del del!
+                    if( isset( $userList[$channel] ) )
+                        unset( $userList[$channel] );
                     $endOfNamesList[$channel] = FALSE;
                 }
-
-                if( $endOfNamesList[$channel] ) {
-                    // Already got names list; reset, as this is new
-                    unset($userList[$channel]);
-                    $endOfNamesList[$channel] = FALSE;
-                }
-                debug( $channel . ' be getting some names! :D' );
-                $tmpUserList = explode(' ',trim($params[3]));
+                $tmpUserList = explode( ' ',$data['pieces'][2]);
 
                 foreach($tmpUserList as $num => $user) {
                     $tmpUserList[$num] = ltrim($user,$isupport['prefix']);
@@ -167,37 +120,35 @@ if ( !$socket ) {
 
                 foreach( $tmpUserList as $user ) {
                     $userList[$channel][] = $user;
-                    debug( 'Added ' . $user . ' to ' . $channel );
                 }
-                
-                debug( 'Userlist for ' . $channel . ': ' . implode( ', ', $userList[$channel] ) );
+               
                 break;
             case '366':
                 if( !isset($endOfNamesList) ) {
                     $endOfNamesList = array();
                 }
-                $channel = $tmp[3];
+                $channel = $data['pieces'][0];
 
                 $endOfNamesList[$channel] = TRUE;
                 break;
             case 'join':
                 // :SnoFox!~SnoFox@SnoFox.net JOIN #clueirc
-                coreJoin( $nick, $ident, $address, $params[0] );
+                coreJoin( $nick, $ident, $address, $data['target'] );
                 break;
             case 'part':
-                corePart( $nick, $ident, $address, $params[0], $params[1] );
+                corePart( $nick, $ident, $address, $data['target'], $data['pieces'][0] );
                 break;
             case 'quit':
-                coreQuit( $nick, $ident, $address, $params[0] );
+                coreQuit( $nick, $ident, $address, $data['pieces'][0] );
                 break;
             case 'nick':
-                coreNick( $nick, $ident, $address, $params[0] );
+                coreNick( $nick, $ident, $address, $data['target'] );
                 break;
             case 'kick':
-                coreKick( $nick, $ident, $address, $params[0], $params[1], $params[2] );
+                coreKick( $nick, $ident, $address, $data['target'], $data['pieces'][0], $data['pieces'][1] );
                 break;
             case 'privmsg':
-                corePrivmsg( $nick, $ident, $address, $params[0], $params[1] );
+                corePrivmsg( $nick, $ident, $address, $data['target'], $data['pieces'][0] );
                 break;
             default:
                 break;

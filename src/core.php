@@ -6,8 +6,7 @@
 function coreJoin( $nick, $ident, $host, $chan ) {
     // Maintain userlist
     global $userList;
-    $userList[ $channel ][] = $nick;
-    debug( '(JOIN) Userlist for ' . $chan . ': ' . implode( ', ', $userList[$chan] ) );
+    $userList[ $chan ][] = $nick;
 }
 function corePart( $nick, $ident, $host, $chan, $reason ) {
     // Maintain userlist
@@ -18,7 +17,6 @@ function corePart( $nick, $ident, $host, $chan, $reason ) {
             break;
         }
     } // foreach
-    debug('(PART) Userlist for '.$chan.': '.implode(', ', $userList[$chan]) );
 }
 function coreQuit( $nick, $ident, $host, $reason ) {
     // Maintain userlist
@@ -31,7 +29,6 @@ function coreQuit( $nick, $ident, $host, $reason ) {
             } // if
         } // foreach user in channel
     } // foreach channel
-    debug('(QUIT) Userlist for '.$chan.': '.implode(', ', $userList[$chan]) );
 }
 function coreNick( $nick, $ident, $host, $newNick ) {
     // Maintain userlist
@@ -44,7 +41,6 @@ function coreNick( $nick, $ident, $host, $newNick ) {
             } // if
         } // Foreach user in channel
     } // foreach channel
-    debug('(NICK) Userlist for '.$chan.': '.implode(', ', $userList[$chan]) );
 }
 function coreKick( $nick, $ident, $host, $chan, $victim, $reason ) {
     // Maintain userlist
@@ -55,7 +51,6 @@ function coreKick( $nick, $ident, $host, $chan, $victim, $reason ) {
             break;
         }
     } // foreach
-    debug('(KICK) Userlist for '.$chan.': '.implode(', ', $userList[$chan]) );
 }
 function corePrivmsg( $nick, $ident, $host, $chan, $msg ) {
    /* global $ignores;
@@ -67,6 +62,6 @@ function corePrivmsg( $nick, $ident, $host, $chan, $msg ) {
 function coreConnected() {
     global $config;
     foreach( $config['channels'] as $channel ) {
-        ircWrite( 'JOIN ' . $channel );
+       ircWrite( 'JOIN ' . $channel );
     }
 }

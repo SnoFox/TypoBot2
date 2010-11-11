@@ -3,12 +3,12 @@
 
 $config = Array
 (
-    'server'    => '127.0.0.1',
+    'server'    => 'delta.cluenet.org',
     'port'      => '6667',
-    'nick'      => 'Typo',
+    'nick'      => '[Dev]Typo',
     'user'      => 'TypoBot',
     'gecos'     => 'The Typo Bot',
-    'channels'  => array ( '#foxden' ),
+    'channels'  => array ( '#clueirc', '#foxden' ),
     'lang'      => 'en',
 );
 

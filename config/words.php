@@ -96,7 +96,7 @@ $spexceptions = Array
         '/GBP/',
         '/USD/',
         '/SVN/',
-        '/CVS',			
+        '/CVS/',			
 
         // Chatspeak 4 lazy ppl
         '/lol/i',
