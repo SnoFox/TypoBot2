@@ -139,7 +139,7 @@ if ( !$socket ) {
                 corePart( $nick, $ident, $address, $data['target'], $data['pieces'][0] );
                 break;
             case 'quit':
-                coreQuit( $nick, $ident, $address, $data['pieces'][0] );
+                coreQuit( $nick, $ident, $address, $data['target'] );
                 break;
             case 'nick':
                 coreNick( $nick, $ident, $address, $data['target'] );

@@ -21,6 +21,8 @@ function logit( $str ) {
     print "$str.\n";
 }
 function ircSplit( $message ) {
+    // Cobi's ircSplit message, from PHPserv 2.0 and ClueBot-NG
+    // Found here: http://is.gd/gWFCj (11-11-10)
     $return = Array();
     $i = 0;
     $quotes = false;
