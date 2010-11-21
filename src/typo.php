@@ -7,7 +7,6 @@ function checkSpelling( $nick, $target, $message ) {
     global $userList, $userData, $pspell, $ignores, $correctionsi, $corrections, $acorrections, $ecorrections, $exceptions, $spexceptions;
     $breakChars = array(
         '/',
-        '\'',
         '_'
     );
     $message = str_replace($breakChars,' ',$message);
@@ -72,7 +71,8 @@ function checkSpelling( $nick, $target, $message ) {
                     if (strlen($word) < 3) { continue; }
 
                         foreach( $userList[$target] as $user ) {
-                            if( strtolower($word) == strtolower($user) ) {
+                            if( strtolower($word) == strtolower($user) 
+                                or strtolower($word) == strtolower($user) . '\'s') {
                                 continue 2;
                             }
                         }
