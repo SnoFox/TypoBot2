@@ -98,7 +98,7 @@ function checkSpelling( $nick, $target, $message ) {
 
                 // Ignore URIs
                 $looseTypingHurtsAgain = strpos( $word, '://' );
-                if( $looseTypingHurtsAgain <= 4 and !== FALSE )
+                if( $looseTypingHurtsAgain <= 4 and $looseTypingHurtsAgain !== FALSE )
                     continue;
 
                 if (pspell_check($pspell,$word)) { $w = ''; }
