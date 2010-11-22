@@ -22,7 +22,7 @@ function checkSpelling( $nick, $target, $message ) {
             }
         }
 
-        if( ctype_alnum($message[0]) ) {
+        if( !ctype_alnum($message[0]) ) {
             // Ignore lines starting w/o alpha-numeric characters
             // Probably a command to a different bot
             // (I'm tired of getting Typo corrections when spitting out PHP code
@@ -97,7 +97,8 @@ function checkSpelling( $nick, $target, $message ) {
                     continue;
 
                 // Ignore URIs
-                if( strpos( $word, '://' ) <= 4 )
+                $looseTypingHurtsAgain = strpos( $word, '://' );
+                if( $looseTypingHurtsAgain <= 4 and !== FALSE )
                     continue;
 
                 if (pspell_check($pspell,$word)) { $w = ''; }
