@@ -76,6 +76,9 @@ function checkSpelling( $nick, $target, $message ) {
                                 continue 2;
                             }
                         }
+                    $letter = ord($word[0]);
+                    if( 65 <= $letter and $letter is <= 90 )
+                        continue;
 
                     if (pspell_check($pspell,$word)) { $w = ''; }
                     else { ($w = pspell_suggest($pspell,$word)) or ($w = 'Incorrect.'); $w = $w[0]; }
