@@ -92,10 +92,10 @@ function checkSpelling( $nick, $target, $message ) {
                             }
                     }
                 // Ignore proper nouns (and words in all-caps ;])
-                $letter = ord($word[0]);
+/*                $letter = ord($word[0]);
                 if( 65 <= $letter and $letter <= 90 )
                     continue;
-
+ */
                 // Ignore URIs
                 $looseTypingHurtsAgain = strpos( $word, '://' );
                 if( $looseTypingHurtsAgain <= 4 and $looseTypingHurtsAgain !== FALSE )
